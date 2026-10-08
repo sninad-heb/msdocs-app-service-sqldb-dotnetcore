@@ -8,62 +8,27 @@ products:
 - azure
 - aspnet-core
 - azure-app-service
-- azure-sql-database
+- azure-database-postgresql
 - azure-virtual-network
 urlFragment: msdocs-app-service-sqldb-dotnetcore
-name: Deploy an ASP.NET Core web app with SQL Database in Azure
-description: "A sample application you can use to follow along with Tutorial: Deploy an ASP.NET Core and Azure SQL Database app to Azure App Service."
+name: Deploy an ASP.NET Core web app with PostgreSQL in Azure
+description: "A sample ASP.NET Core application configured to use PostgreSQL with Entity Framework Core."
 ---
 
-# Deploy an ASP.NET Core web app with SQL Database in Azure
+# ASP.NET Core web app with PostgreSQL
 
-This is an ASP.NET Core application that you can use to follow along with the tutorial at 
-[Tutorial: Deploy an ASP.NET Core and Azure SQL Database app to Azure App Service](https://learn.microsoft.com/azure/app-service/tutorial-dotnetcore-sqldb-app) or by using the [Azure Developer CLI (azd)](https://learn.microsoft.com/azure/developer/azure-developer-cli/overview) according to the instructions below.
-
+This ASP.NET Core application uses Entity Framework Core with PostgreSQL. The dev container includes a local PostgreSQL database; Azure infrastructure is not included in this repository.
+## Run in Azure
 > [!IMPORTANT]
-> This tutorial sample is intentionally anonymous. All visitors share the same Todo list, so don't enter personal, confidential, or sensitive information.
+Provision an Azure App Service and Azure Database for PostgreSQL Flexible Server separately. Configure network access between them, then set the App Service application setting `ConnectionStrings__MyDbConnection` to the PostgreSQL connection string. Keep the password in an application setting or secret store, and require TLS for the Azure database connection.
 
-## Run the sample
+Apply the schema from a trusted environment that can reach the database:
 
-This project has a [dev container configuration](.devcontainer/), which makes it easier to develop apps locally, deploy them to Azure, and monitor them. The easiest way to run this sample application is inside a GitHub codespace. Follow these steps:
+```shell
+dotnet ef database update
+```
 
-1. Fork this repository to your account. For instructions, see [Fork a repo](https://docs.github.com/get-started/quickstart/fork-a-repo).
-
-1. From the repository root of your fork, select **Code** > **Codespaces** > **+**.
-
-1. In the codespace terminal, run the following commands:
-
-    ```shell
-    dotnet restore
-    dotnet ef database update
-    dotnet run
-    ```
-
-1. When you see the message `Your application running on port 5093 is available.`, click **Open in Browser**.
-
-## Quick deploy
-
-This project is designed to work well with the [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/overview), which makes it easier to develop apps locally, deploy them to Azure, and monitor them.
-
-🎥 Watch a deployment of the code in [this screencast](https://www.youtube.com/watch?v=JDlZ4TgPKYc).
-
-In the GitHub codespace:
-
-1. Log in to Azure.
-
-    ```shell
-    azd auth login
-    ```
-
-1. Add the Azure infrastructure template and keep the existing application files:
-
-    ```shell
-    azd init --template dotnet-app-service-sqldb-infra .
-    ```
-
-1. Provision and deploy all the resources:
-
-    ```shell
+The migrations in [Migrations](Migrations) are PostgreSQL-specific. Do not use the former SQL Server migrations to create or update a PostgreSQL database.
     azd up
     ```
 

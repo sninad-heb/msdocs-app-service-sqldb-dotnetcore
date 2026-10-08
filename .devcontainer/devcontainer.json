@@ -1,7 +1,7 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/dotnet-mssql
+// README at: https://github.com/devcontainers/templates/tree/main/src/dotnet
 {
-	"name": "C# (.NET) and MS SQL",
+	"name": "C# (.NET) and PostgreSQL",
 	"dockerComposeFile": "docker-compose.yml",
 	"service": "app",
 	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
@@ -23,41 +23,14 @@
 
 	"customizations": {
 		"vscode": {
-			// "settings": { 
-			// 	// Default connection settings for the SQL Server (mssql) extension
-			// 	"mssql.connections": [
-			// 		{
-			// 			"server": "localhost,1433",
-			// 			"database": "",
-			// 			"authenticationType": "SqlLogin",
-			// 			"user": "sa",
-			// 			"password": "P@ssw0rd",
-			// 			"emptyPasswordInput": false,
-			// 			"savePassword": true,
-			// 			"profileName": "mssql-container",
-			// 			"trustServerCertificate": true
-			// 		}
-			// 	]
-			// },
-			
 			"extensions": [
-				// To use the SQL Server (mssql) extension, uncomment the connection settings above too
-				// "ms-mssql.mssql", 
 				"GitHub.copilot"
 			]
 		}
 	},
 
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [5000, 5001],
-	// "portsAttributes": {
-	//		"5001": {
-	//			"protocol": "https"
-	//		}
-	// }
-
-	// postCreateCommand.sh parameters: $1=SA password, $2=dacpac path, $3=sql script(s) path
-	"postCreateCommand": "bash .devcontainer/mssql/postCreateCommand.sh 'P@ssw0rd' './bin/Debug/' './.devcontainer/mssql/'"
+	"forwardPorts": [5093, 7291],
+	"postCreateCommand": "dotnet tool install --global dotnet-ef --version 10.* && dotnet restore"
 
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "root"

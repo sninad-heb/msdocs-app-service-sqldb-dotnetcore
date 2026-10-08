@@ -2,17 +2,11 @@
 using DotNetCoreSqlDb.Data;
 var builder = WebApplication.CreateBuilder(args);
 
-// Add database context
-if (builder.Environment.IsDevelopment())
-{
-    builder.Services.AddDbContext<MyDatabaseContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("MyDbConnection")));
-}
-// else
-// {
-//     builder.Services.AddDbContext<MyDatabaseContext>(options =>
-//         options.UseSqlServer(builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING")));
-// }
+var connectionString = builder.Configuration.GetConnectionString("MyDbConnection")
+    ?? throw new InvalidOperationException("Connection string 'MyDbConnection' is not configured.");
+
+builder.Services.AddDbContext<MyDatabaseContext>(options =>
+    options.UseNpgsql(connectionString));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

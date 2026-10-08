@@ -14,6 +14,9 @@ services:
 
     # Runs app on the same network as the database container, allows "forwardPorts" in devcontainer.json function.
     network_mode: service:db
+      depends_on:
+        db:
+          condition: service_healthy
 
     # Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
     # user: root
@@ -22,11 +25,19 @@ services:
     # (Adding the "ports" property to this file will not forward from a Codespace.)
 
   db:
-    image: mcr.microsoft.com/mssql/server:2019-latest
+    image: postgres:17-alpine
     restart: unless-stopped
     environment:
-      SA_PASSWORD: P@ssw0rd
-      ACCEPT_EULA: Y
+      POSTGRES_DB: ApplicationDB
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ApplicationDB"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
-    # Add "forwardPorts": ["db:1433"] to **devcontainer.json** to forward MSSQL locally.
-    # (Adding the "ports" property to this file will not forward from a Codespace.)
+volumes:
+  postgres-data:
